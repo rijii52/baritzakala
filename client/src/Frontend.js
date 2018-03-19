@@ -33,27 +33,29 @@ class ListOfRaces extends Component {
     );
 
     return (
-      <table className="RacesTable">
-        <thead>
-          <tr>
-            <th>Start</th>
-            <th>Stop</th>
-            <th>Time</th>
-            <th>Speed</th>
-            <th>Distance</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tableContent}
-          <tr>
-              <td></td>
-              <td></td>
-              <td>{SecondsToTimeFormat(this.props.runningTime)}</td>
-              <td></td>
-              <td>{this.props.runningDistance}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="RacesTableHolder">
+        <table className="RacesTable">
+          <thead>
+            <tr>
+              <th>Start</th>
+              <th>Stop</th>
+              <th>Time</th>
+              <th>Speed</th>
+              <th>Distance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableContent}
+            <tr>
+                <td></td>
+                <td></td>
+                <td>{SecondsToTimeFormat(this.props.runningTime)}</td>
+                <td></td>
+                <td>{this.props.runningDistance}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     );
   }
 }
@@ -63,7 +65,6 @@ class ActiveTraining extends Component {
     super(props);
 
     this.state = {
-      runningStatus: "walking",
       time: 0
     };
 
@@ -84,8 +85,9 @@ class ActiveTraining extends Component {
     }
     let timeAhead = startRaceTime - this.props.trainingTime;
 
+    this.props.updateRunningStatus("starting");
+
     this.setState({
-      runningStatus: "starting",
       start: startRaceTime,
       time: timeAhead
     });
@@ -102,10 +104,10 @@ class ActiveTraining extends Component {
     clearInterval(this.timeID);
 
     // if race was actually started then store the race, otherwise cancel it
-    if (this.state.runningStatus === "running") {
+    if (this.props.runningStatus === "running") {
 
         var stoptime = this.state.start + this.state.time;
-        var distance = parseInt(8000 / 3600 * this.state.time);
+        var distance = parseInt(8000 / 3600 * this.state.time, 10);
 
         this.props.addRace({
           start: this.state.start,
@@ -116,14 +118,15 @@ class ActiveTraining extends Component {
         });
     }
 
+    this.props.updateRunningStatus("walking");
+
     this.setState({
-      runningStatus: "walking",
       time: 0
     });
   }
 
   raceTick () {
-    if (this.state.runningStatus === "starting") {
+    if (this.props.runningStatus === "starting") {
       this.setState((prevState, props) => ({
         time: prevState.time - 1
       }));
@@ -134,15 +137,13 @@ class ActiveTraining extends Component {
       }));
     }
 
-    if (this.state.time == 0) {
-      this.setState({
-        runningStatus: "running"
-      });
+    if (this.state.time === 0) {
+      this.props.updateRunningStatus("running");
     }
   }
 
   raceCtrlBlock () {
-    switch (this.state.runningStatus) {
+    switch (this.props.runningStatus) {
       case "walking":
         return (
           <div className="RaceCtrlBlockHolder">
@@ -209,6 +210,7 @@ class Frontend extends Component {
     };
 
     this.startTraining = this.startTraining.bind(this);
+    this.updateRunningStatus = this.updateRunningStatus.bind(this);
     this.finishTraining = this.finishTraining.bind(this);
     this.storeTraining = this.storeTraining.bind(this);
     this.addRace = this.addRace.bind(this);
@@ -219,6 +221,7 @@ class Frontend extends Component {
 
     this.setState({
       status: "training",
+      runningStatus: "walking",
       trainingTime: 0,
       races: [
         {
@@ -246,13 +249,21 @@ class Frontend extends Component {
     );
   }
 
+  updateRunningStatus (runningStatus) {
+    this.setState ({
+      runningStatus: runningStatus
+    });
+  }
+
   finishTraining (e) {
     e.preventDefault();
 
-    clearInterval(this.timeID);
-    this.setState({
-      status: "pending_store"
-    });
+    if (this.state.runningStatus === "walking") {
+      clearInterval(this.timeID);
+      this.setState({
+        status: "pending_store"
+      });
+    }
   }
 
   trainingTick () {
@@ -280,11 +291,20 @@ class Frontend extends Component {
         );
         
       case "training":
-        return  (
-          <div className="SmallCtrlButtonHolder">
-            <a href="./" className="MainCtrlButton GreenCtrlButton SmallCtrlButton" onClick={this.finishTraining}>FINISH</a>
-          </div>
-        );
+        if (this.state.runningStatus === "walking") {
+          return  (
+            <div className="SmallCtrlButtonHolder">
+              <a href="./" className="MainCtrlButton SmallCtrlButton GreenCtrlButton" onClick={this.finishTraining}>FINISH</a>
+            </div>
+          );
+          }
+        else {
+          return  (
+            <div className="SmallCtrlButtonHolder">
+              <a href="./" className="MainCtrlButton SmallCtrlButton GrayCtrlButton" disabled onClick={this.finishTraining}>FINISH</a>
+            </div>
+          );
+        }
 
       case "pending_store":
         return (
@@ -310,12 +330,13 @@ class Frontend extends Component {
     });
   }
 
-  trainingComponent (status, trainingTime, races, runningTime, runningDistance, addRace) {
+  trainingComponent (status, trainingTime, races, runningTime, runningDistance, runningStatus, updateRunningStatus, addRace) {
     switch (this.state.status)
     {
       case "training":
         return <ActiveTraining status={status} trainingTime={trainingTime} races={races} 
-          runningTime={runningTime} runningDistance={runningDistance} addRace={addRace} />
+          runningTime={runningTime} runningDistance={runningDistance} runningStatus={this.state.runningStatus} 
+          updateRunningStatus={updateRunningStatus} addRace={addRace} />
 
       case "pending_store":
         return <FinishedTraining />
@@ -328,7 +349,7 @@ class Frontend extends Component {
   render () {
 
     const trainingComponent = this.trainingComponent(this.state.status, this.state.trainingTime, this.state.races,
-      this.state.runningTime, this.state.runningDistance, this.addRace);
+      this.state.runningTime, this.state.runningDistance, this.state.runningStatus, this.updateRunningStatus, this.addRace);
     const TrainingButton = this.trainingButton();
 
     return (
