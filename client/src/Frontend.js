@@ -220,9 +220,25 @@ class ActiveTraining extends Component {
 }
 
 class FinishedTraining extends Component {
+
+  listOfRacesComponent (races, runningTime, runningDistance) {
+    return <ListOfRaces races={races} runningTime={runningTime} runningDistance={runningDistance} />
+  }
+
   render () {
+
+    const ListOfRacesComponent = this.listOfRacesComponent(this.props.races, this.props.runningTime, this.props.runningDistance);
+    const totalStyle = {
+      fontSize:'18px'
+    };
+    
     return (
-      <div className="FinishedTraining">FINISHED TRAINING</div>
+      <div className="FinishedTraining">
+        {ListOfRacesComponent}
+        <div style={totalStyle}>
+          Total Training Time: {parseInt(this.props.trainingTime / 60)}:{parseInt(this.props.trainingTime % 60)}
+        </div>
+      </div>
     );
   }
 }
@@ -309,10 +325,18 @@ class Frontend extends Component {
   }
 
   callStoreTraining = async () => {
+
+    var stateToStore = {
+      trainingTime: this.state.trainingTime,
+      races: this.state.races,
+      runningTime: this.state.runningTime,
+      runningDistance: this.state.runningDistance
+    };
+
     const response = await fetch('api/storetraining', {
       method: 'post',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(this.state)
+      body: JSON.stringify(stateToStore)
     });
     
     const body = await response.json();
@@ -378,7 +402,7 @@ class Frontend extends Component {
           updateRunningStatus={updateRunningStatus} addRace={addRace} />
 
       case "pending_store":
-        return <FinishedTraining />
+        return <FinishedTraining trainingTime={trainingTime} races={races} runningTime={runningTime} runningDistance={runningDistance} />
 
       default:
         break;

@@ -130,3 +130,9 @@
     width: 100%;
     padding-bottom: 4px;
 }
+
+.FinishedTraining {
+    display: inline-block;
+    width: 100%;
+    height: 85%;
+}
