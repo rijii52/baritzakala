@@ -69,8 +69,8 @@
 .RacesTableHolder {
     display: inline-block;
     width: 100%;
-    height: 230px;
-    max-height: 230px;
+    height: 210px;
+    max-height: 210px;
     overflow-y: auto;
 }
 
@@ -123,4 +123,10 @@
 
 .RaceTimeRunning {
     color: lime;
+}
+
+.SpeedInputStyleHolder {
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 4px;
 }

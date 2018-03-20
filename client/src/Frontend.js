@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Frontend.css';
 import { isNumber, isNull } from 'util';
+import NumericInput from 'react-numeric-input';
 
 function SecondsToTimeFormat(seconds) {
   if (isNull(seconds) || !isNumber(seconds))
@@ -27,7 +28,7 @@ class ListOfRaces extends Component {
         <td>{SecondsToTimeFormat(element.start)}</td>
         <td>{SecondsToTimeFormat(element.stop)}</td>
         <td>{SecondsToTimeFormat(element.time)}</td>
-        <td>{element.speed}</td>
+        <td>{element.speed.toFixed(1)}</td>
         <td>{element.distance}</td>
       </tr>
     );
@@ -65,11 +66,13 @@ class ActiveTraining extends Component {
     super(props);
 
     this.state = {
-      time: 0
+      time: 0,
+      speed: 8.6
     };
 
     this.startRunning = this.startRunning.bind(this);
     this.stopRunning = this.stopRunning.bind(this);
+    this.handleSpeedChange = this.handleSpeedChange.bind(this);
   }
 
   listOfRacesComponent (races, runningTime, runningDistance) {
@@ -107,13 +110,13 @@ class ActiveTraining extends Component {
     if (this.props.runningStatus === "running") {
 
         var stoptime = this.state.start + this.state.time;
-        var distance = parseInt(8000 / 3600 * this.state.time, 10);
+        var distance = parseInt(this.state.speed * 1000 / 3600 * this.state.time, 10);
 
         this.props.addRace({
           start: this.state.start,
           stop: stoptime,
           time: this.state.time,
-          speed: 8.0,
+          speed: this.state.speed,
           distance: distance
         });
     }
@@ -142,12 +145,29 @@ class ActiveTraining extends Component {
     }
   }
 
+  handleSpeedChange (valueAsNumber, valueAsString) {
+    this.setState({
+      speed: valueAsNumber
+    });
+  }
+
   raceCtrlBlock () {
+    var SpeedInputStyle = {
+      input: {
+        width: '134px',
+        fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
+        fontSize: '32px'
+      }
+    };
+
     switch (this.props.runningStatus) {
       case "walking":
         return (
           <div className="RaceCtrlBlockHolder">
             <div className="LargeCtrlBtnHolder">
+              <div className="SpeedInputStyleHolder">
+                <NumericInput step={0.1} precision={1} value={this.state.speed} style={SpeedInputStyle} onChange={this.handleSpeedChange} />
+              </div>
               <div className="RaceTime RaceTimeWalking">{SecondsToTimeFormat(this.state.time)}</div><br />
               <a href="./" className="MainCtrlButton GreenCtrlButton LargeCtrlButton" onClick={this.startRunning}>RUN</a>
             </div>
@@ -158,6 +178,9 @@ class ActiveTraining extends Component {
         return (
           <div className="RaceCtrlBlockHolder">
             <div className="LargeCtrlBtnHolder">
+              <div className="SpeedInputStyleHolder">
+                <NumericInput disabled step={0.1} precision={1} value={this.state.speed} style={SpeedInputStyle} onChange={this.handleSpeedChange} />
+              </div>
               <div className="RaceTime RaceTimeStarting">{SecondsToTimeFormat(this.state.time)}</div><br />
               <a href="./" className="MainCtrlButton GreenCtrlButton LargeCtrlButton" onClick={this.stopRunning}>STOP</a>
             </div>
@@ -168,6 +191,9 @@ class ActiveTraining extends Component {
         return (
           <div className="RaceCtrlBlockHolder">
             <div className="LargeCtrlBtnHolder">
+              <div className="SpeedInputStyleHolder">
+                <NumericInput disabled step={0.1} precision={1} value={this.state.speed} style={SpeedInputStyle} onChange={this.handleSpeedChange} />
+              </div>
               <div className="RaceTime RaceTimeRunning">{SecondsToTimeFormat(this.state.time)}</div><br />
               <a href="./" className="MainCtrlButton GreenCtrlButton LargeCtrlButton" onClick={this.stopRunning}>STOP</a>
             </div>
@@ -275,9 +301,22 @@ class Frontend extends Component {
   storeTraining (e) {
     e.preventDefault();
 
+    this.callStoreTraining();
+
     this.setState({
       status: "initial"
     });
+  }
+
+  callStoreTraining = async () => {
+    const response = await fetch('api/storetraining', {
+      method: 'post',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(this.state)
+    });
+    
+    const body = await response.json();
+    if (response.status !== 200) throw Error(body.message);
   }
 
   trainingButton () {

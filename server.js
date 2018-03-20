@@ -64,4 +64,13 @@ app.get('/api/history', (req, res) => {
   );
 });
 
+app.post('/api/storetraining', (req, res) => {
+
+  // console.log(req.body);
+
+  res.send({
+    result: 'ok'
+  });
+});
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
