@@ -1,5 +1,23 @@
 import React, { Component } from 'react';
 import './TrainingHistory.css';
+import { isNumber, isNull } from 'util';
+
+function SecondsToTimeFormat(seconds) {
+  if (isNull(seconds) || !isNumber(seconds))
+    return "";
+
+  var sMinutes = parseInt(seconds / 60, 10).toString();
+  while (sMinutes.length < 2) {
+    sMinutes = '0' + sMinutes;
+  }
+
+  var sSeconds = parseInt(seconds % 60, 10).toString();
+  while (sSeconds.length < 2) {
+    sSeconds = '0' + sSeconds;
+  }
+
+  return sMinutes + ":" + sSeconds;
+}
 
 class TrainingHistory extends Component {
     // init history state object
@@ -31,10 +49,12 @@ class TrainingHistory extends Component {
         const tableContent = this.state.history.map((element) =>
           <tr>
             <td>{element.TrainingDate}</td>
-            <td>{element.MaxRunningTime}</td>
-            <td>{element.TotalRunningTime}</td>
+            <td>{element.races.length}</td>
+            <td>{SecondsToTimeFormat(element.MaxRunningTime)}</td>
+            <td>{element.MaxRunningDistance}</td>
+            <td>{SecondsToTimeFormat(element.TotalRunningTime)}</td>
             <td>{element.TotalRunningDistance}</td>
-            <td>{element.TrainingTime}</td>
+            <td>{SecondsToTimeFormat(element.TrainingTime)}</td>
             <td>{element.TrainingDistance}</td>
           </tr>
         );
@@ -46,7 +66,9 @@ class TrainingHistory extends Component {
                 <thead>
                   <tr>
                     <th>Training Date</th>
+                    <th>Races</th>
                     <th>Max Running Time</th>
+                    <th>Max Running Distance</th>
                     <th>Total Running Time</th>
                     <th>Total Running Distance</th>
                     <th>Training Time</th>                

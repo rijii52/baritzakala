@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var trainingModel = require('./models/training.js');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -11,68 +13,47 @@ app.get('/api/hello', (req, res) => {
 });
 
 app.get('/api/history', (req, res) => {
-  res.send(
-    {
-      history: [
-        {
-          TrainingDate: '12-Mar-2018',
-          MaxRunningTime: 7.0,
-          TotalRunningTime: 28.0,
-          TotalRunningDistance: 3733,
-          TrainingTime: 50.0,
-          TrainingDistance: 5612
-        },
-        {
-          TrainingDate: '13-Mar-2018',
-          MaxRunningTime: 7.0,
-          TotalRunningTime: 28.0,
-          TotalRunningDistance: 3733,
-          TrainingTime: 50.0,
-          TrainingDistance: 5613
-        },
-        {
-          TrainingDate: '14-Mar-2018',
-          MaxRunningTime: 7.0,
-          TotalRunningTime: 28.0,
-          TotalRunningDistance: 3733,
-          TrainingTime: 50.0,
-          TrainingDistance: 5614
-        },
-        {
-          TrainingDate: '15-Mar-2018',
-          MaxRunningTime: 7.0,
-          TotalRunningTime: 28.0,
-          TotalRunningDistance: 3733,
-          TrainingTime: 50.0,
-          TrainingDistance: 5615
-        },
-        {
-          TrainingDate: '16-Mar-2018',
-          MaxRunningTime: 7.0,
-          TotalRunningTime: 28.0,
-          TotalRunningDistance: 3733,
-          TrainingTime: 50.0,
-          TrainingDistance: 5616
-        },
-        {
-          TrainingDate: '17-Mar-2018',
-          MaxRunningTime: 7.0,
-          TotalRunningTime: 28.0,
-          TotalRunningDistance: 3733,
-          TrainingTime: 50.0,
-          TrainingDistance: 5617
-        }
-      ]
+
+  var mongoDB = 'mongodb://localhost:27017/Baritzakala';
+  mongoose.connect(mongoDB);
+  var db = mongoose.connection;
+
+  trainingModel.find({}).sort({_id : 1}).lean().exec(function (err, trainingDocs) {
+    if (err) return handleError(err);
+
+    // reformat date
+    var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+  
+    for (var i = 0; i < trainingDocs.length; i++) {
+      var TheDate = new Date(trainingDocs[i].TrainingDate);
+      var FormattedDate = TheDate.getDay() + " " + monthNames[TheDate.getMonth()] + " " + TheDate.getFullYear();
+      trainingDocs[i].TrainingDate = FormattedDate;
     }
-  );
+
+    res.send({
+        history: trainingDocs
+      });
+  });
 });
 
 app.post('/api/storetraining', (req, res) => {
 
   console.log(req.body);
 
-  res.send({
-    result: 'ok'
+  // create document using model
+  var NewTraining = new trainingModel(req.body);
+
+  // connect db
+  var mongoDB = 'mongodb://localhost:27017/Baritzakala';
+  mongoose.connect(mongoDB);
+  var db = mongoose.connection;
+
+  NewTraining.save(function (err) {
+    if (err) return handleError(err);
+    // saved!
+    res.send({
+      result: 'ok'
+    });
   });
 });
 

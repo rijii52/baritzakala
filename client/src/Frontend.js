@@ -236,7 +236,7 @@ class FinishedTraining extends Component {
       <div className="FinishedTraining">
         {ListOfRacesComponent}
         <div style={totalStyle}>
-          Total Training Time: {parseInt(this.props.trainingTime / 60)}:{parseInt(this.props.trainingTime % 60)}
+          Total Training Time: {parseInt(this.props.trainingTime / 60, 10)}:{parseInt(this.props.trainingTime % 60, 10)}
         </div>
       </div>
     );
@@ -325,12 +325,25 @@ class Frontend extends Component {
   }
 
   callStoreTraining = async () => {
+    var Today = Date.now();
+    var maxRunningTime = 0;
+    var maxRunningDistance = 0;
+    this.state.races.forEach(element => {
+      if (element.time > maxRunningTime)
+        maxRunningTime = element.time;
+      if (element.time * element.speed > maxRunningDistance)
+        maxRunningDistance = Math.round(element.time * element.speed * 1000 / 3600);
+    });
 
     var stateToStore = {
-      trainingTime: this.state.trainingTime,
-      races: this.state.races,
-      runningTime: this.state.runningTime,
-      runningDistance: this.state.runningDistance
+      TrainingDate: Today,
+      MaxRunningTime: maxRunningTime,
+      MaxRunningDistance: maxRunningDistance,
+      TotalRunningTime: this.state.runningTime,
+      TotalRunningDistance: this.state.runningDistance,
+      TrainingTime: this.state.trainingTime,
+      TrainingDistance: this.state.runningDistance,  // TO BE CHANGED 
+      races: this.state.races
     };
 
     const response = await fetch('api/storetraining', {
