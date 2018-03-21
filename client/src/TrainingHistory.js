@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './TrainingHistory.css';
 import { isNumber, isNull } from 'util';
+import GeminiScrollbar from 'react-gemini-scrollbar';
+import "gemini-scrollbar/gemini-scrollbar.css";
 
 function SecondsToTimeFormat(seconds) {
   if (isNull(seconds) || !isNumber(seconds))
@@ -61,25 +63,29 @@ class TrainingHistory extends Component {
     
         // return table with static header and prepared content
         return (
-            <div className="History-block">
+          <div className="History-Container">
               <table className="History-table">
-                <thead>
-                  <tr>
-                    <th>Training Date</th>
-                    <th>Races</th>
-                    <th>Max Running Time</th>
-                    <th>Max Running Distance</th>
-                    <th>Total Running Time</th>
-                    <th>Total Running Distance</th>
-                    <th>Training Time</th>                
-                    <th>Training Distance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tableContent}
-                </tbody>
-              </table>
-            </div>
+                  <thead>
+                    <tr>
+                      <th>Training Date</th>
+                      <th>Races</th>
+                      <th>Max Running Time</th>
+                      <th>Max Running Distance</th>
+                      <th>Total Running Time</th>
+                      <th>Total Running Distance</th>
+                      <th>Training Time</th>                
+                      <th>Training Distance</th>
+                    </tr>
+                  </thead>
+                </table>
+            <GeminiScrollbar className="Gemini-Styles" autoshow={true}>
+                <table className="History-table">
+                  <tbody>
+                    {tableContent}
+                  </tbody>
+                </table>
+            </GeminiScrollbar>
+          </div>
         );
       }    
 }

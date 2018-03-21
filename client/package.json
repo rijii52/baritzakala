@@ -5,6 +5,7 @@
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-gemini-scrollbar": "^2.3.4",
     "react-numeric-input": "^2.2.3",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
