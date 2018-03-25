@@ -14,7 +14,7 @@ app.get('/api/hello', (req, res) => {
 
 app.get('/api/history', (req, res) => {
 
-  var mongoDB = 'mongodb://localhost:27017/Baritzakala';
+  var mongoDB = 'mongodb://baritzakala:skillsand123@ds123499.mlab.com:23499/baritzakala';
   mongoose.connect(mongoDB);
   var db = mongoose.connection;
 
@@ -26,7 +26,7 @@ app.get('/api/history', (req, res) => {
   
     for (var i = 0; i < trainingDocs.length; i++) {
       var TheDate = new Date(trainingDocs[i].TrainingDate);
-      var FormattedDate = TheDate.getDay() + " " + monthNames[TheDate.getMonth()] + " " + TheDate.getFullYear();
+      var FormattedDate = TheDate.getDate() + " " + monthNames[TheDate.getMonth()] + " " + TheDate.getFullYear();
       trainingDocs[i].TrainingDate = FormattedDate;
     }
 
@@ -44,7 +44,7 @@ app.post('/api/storetraining', (req, res) => {
   var NewTraining = new trainingModel(req.body);
 
   // connect db
-  var mongoDB = 'mongodb://localhost:27017/Baritzakala';
+  var mongoDB = 'mongodb://baritzakala:skillsand123@ds123499.mlab.com:23499/baritzakala';
   mongoose.connect(mongoDB);
   var db = mongoose.connection;
 
