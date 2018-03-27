@@ -1,19 +1,31 @@
+.Charts-Container {
+    display: inline-block;
+    margin: 32px auto 0 auto;
+    width: 1224px;
+    background-color: rgba(151, 196, 226, 0.5);
+    height: calc(400px);
+}
+
 .History-Container {
     display: inline-block;
     margin: 32px auto 0 auto;
     width: 1224px;
     background-color: rgba(151, 196, 226, 0.5);
-    max-height: calc(100vh - 80px);
+    max-height: calc(100vh - 40px - 480px);
 }
 
 .Gemini-Styles {
-    max-height: calc(100vh - 106px);
+    max-height: calc(100vh - 66px - 480px);
 }
 
 .gm-scrollbar.-horizontal {
     background-color: transparent;
 }  
-  
+
+.gm-scrollbar.-vertical {
+    background-color:  rgba(87, 209, 134, .5);
+  }  
+
 .History-table {
     background-color: rgba(255, 255, 255, 0.7);
     color: black;
@@ -71,7 +83,7 @@
 
 .Details {
     position: absolute;
-    top: 200px;
+    top: 540px;
     left: calc(50vw - 350px);
     width: 700px;
     height: 300px;

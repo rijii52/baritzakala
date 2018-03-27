@@ -268,21 +268,49 @@ class Frontend extends Component {
       races: [
         {
           start: 120,
-          stop: 300,
+          stop: 360,
           time: 180,
           speed: 8.0,
           distance: 400
         },
         {
-          start: 480,
-          stop: 660,
+          start: 540,
+          stop: 810,
+          time: 180,
+          speed: 8.0,
+          distance: 400
+        },
+        {
+          start: 1020,
+          stop: 1170,
+          time: 180,
+          speed: 8.0,
+          distance: 400
+        },
+        {
+          start: 1380,
+          stop: 1500,
+          time: 180,
+          speed: 8.0,
+          distance: 400
+        },
+        {
+          start: 1680,
+          stop: 1800,
+          time: 180,
+          speed: 8.0,
+          distance: 400
+        },
+        {
+          start: 2040,
+          stop: 2190,
           time: 180,
           speed: 8.0,
           distance: 400
         }
       ],
-      runningTime: 360,
-      runningDistance: 800
+      runningTime: 1050,
+      runningDistance: 2333
     });
 
     this.timeID = setInterval(

@@ -98,7 +98,7 @@ class TrainingHistory extends Component {
                 </tr>
                 <tr>
                   <td>Max Running Distance:</td>
-                  <td>{this.state.history[this.state.detailsIndex].MaxRunningDistance} m</td>
+                  <td>{this.state.history[this.state.detailsIndex].MaxRunningDistance}</td>
                 </tr>            
                 <tr>
                   <td>Total Running Time:</td>
@@ -106,7 +106,7 @@ class TrainingHistory extends Component {
                 </tr>                   
                 <tr>
                   <td>Total Running Distance:</td>
-                  <td>{this.state.history[this.state.detailsIndex].TotalRunningDistance} m</td>
+                  <td>{this.state.history[this.state.detailsIndex].TotalRunningDistance}</td>
                 </tr>            
                 <tr>
                   <td>Training Time:</td>
@@ -114,7 +114,7 @@ class TrainingHistory extends Component {
                 </tr>                   
                 <tr>
                   <td>Training Distance:</td>
-                  <td>{this.state.history[this.state.detailsIndex].TrainingDistance} m</td>
+                  <td>{this.state.history[this.state.detailsIndex].TrainingDistance}</td>
                 </tr>            
               </table>
             </div>
@@ -164,6 +164,7 @@ class TrainingHistory extends Component {
         // return table with static header and prepared content
         return (
           <div>
+            <div className="Charts-Container"></div>
             <div className="History-Container">
                 <table className="History-table">
                     <thead>
