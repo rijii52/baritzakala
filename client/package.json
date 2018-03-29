@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "echarts": "^4.0.4",
+    "echarts-for-react": "^2.0.8",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-gemini-scrollbar": "^2.3.4",

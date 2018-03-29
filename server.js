@@ -21,15 +21,6 @@ app.get('/api/history', (req, res) => {
   trainingModel.find({}).sort({_id : 1}).lean().exec(function (err, trainingDocs) {
     if (err) return handleError(err);
 
-    // reformat date
-    var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
-  
-    for (var i = 0; i < trainingDocs.length; i++) {
-      var TheDate = new Date(trainingDocs[i].TrainingDate);
-      var FormattedDate = TheDate.getDate() + " " + monthNames[TheDate.getMonth()] + " " + TheDate.getFullYear();
-      trainingDocs[i].TrainingDate = FormattedDate;
-    }
-
     res.send({
         history: trainingDocs
       });
