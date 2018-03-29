@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var trainingModel = require('./models/training.js');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 5000;
