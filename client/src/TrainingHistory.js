@@ -229,6 +229,7 @@ class TrainingHistory extends Component {
               return FormatDate(labelDate.getTime());
             }
           },
+          max: 'dataMax'
         },
         yAxis: {
           type: 'value'
